@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import TopBar from './TopBar';
 import BottomMenu from './BottomMenu';
-import GameCanvas from './GameCanvas';
+import ZooCanvas from '../canvas/ZooCanvas';
 import GameEngine from '../GameEngine';
 import ToastContainer from '../ui/ToastContainer';
 import ShopModal from '../modals/ShopModal';
@@ -33,8 +33,10 @@ export default function GameLayout() {
         {/* 상단 상태바 */}
         <TopBar />
 
-        {/* 메인 게임 화면 */}
-        <GameCanvas />
+        {/* 메인 게임 화면 - Canvas 2D */}
+        <div className="flex items-center justify-center p-4 bg-gray-100">
+          <ZooCanvas />
+        </div>
 
         {/* 하단 메뉴 */}
         <BottomMenu onMenuClick={setActiveModal} />
