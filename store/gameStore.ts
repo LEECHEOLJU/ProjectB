@@ -10,6 +10,7 @@ interface GameStore extends GameState {
   addExperience: (amount: number) => void;
   setReputation: (amount: number) => void;
   addReputation: (amount: number) => void;
+  setLevel: (level: number) => void;
   setGameSpeed: (speed: GameSpeed) => void;
   togglePause: () => void;
   updateGameTime: () => void;
@@ -72,6 +73,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
   addReputation: (amount) => set((state) => ({
     reputation: Math.max(0, Math.min(100, state.reputation + amount)),
   })),
+
+  setLevel: (level) => set({
+    level: Math.max(1, level),
+    experience: 0,
+  }),
 
   setGameSpeed: (speed) => set({
     gameSpeed: speed,
