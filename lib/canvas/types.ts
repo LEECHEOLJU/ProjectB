@@ -46,7 +46,10 @@ export interface CanvasAnimal {
 
 export interface CanvasBuilding {
   id: string;
-  type: 'enclosure' | 'shop' | 'restaurant' | 'attraction' | 'entrance';
+  type: 'enclosure' | 'shop' | 'restaurant' | 'attraction' | 'entrance'
+    | 'info_center' | 'restroom' | 'bench' | 'ice_cream' | 'souvenir'
+    | 'aquarium' | 'reptile_house' | 'aviary' | 'vet_clinic' | 'admin_office'
+    | 'ferris_wheel' | 'train_station' | 'playground' | 'photo_booth' | 'fountain';
   x: number;
   y: number;
   width: number;
