@@ -9,6 +9,8 @@ import ToastContainer from '../ui/ToastContainer';
 import ShopModal from '../modals/ShopModal';
 import AnimalsModal from '../modals/AnimalsModal';
 import StatsModal from '../modals/StatsModal';
+import LevelUpModal from '../game/LevelUpModal';
+import GridPlacementSystem from '../game/GridPlacementSystem';
 import type { ModalType } from '@/types';
 
 export default function GameLayout() {
@@ -24,6 +26,9 @@ export default function GameLayout() {
       {/* Toast Notifications */}
       <ToastContainer />
 
+      {/* Level Up Modal */}
+      <LevelUpModal />
+
       <div className="game-container">
         {/* 상단 상태바 */}
         <TopBar />
@@ -38,6 +43,7 @@ export default function GameLayout() {
         {activeModal === 'shop' && <ShopModal onClose={closeModal} />}
         {activeModal === 'animals' && <AnimalsModal onClose={closeModal} />}
         {activeModal === 'stats' && <StatsModal onClose={closeModal} />}
+        {activeModal === 'placement' && <GridPlacementSystem onClose={closeModal} />}
       </div>
     </>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useGameStore } from '@/store/gameStore';
+import { useLevelStore, getRequiredExpForLevel } from '@/store/levelStore';
 import { formatMoney, formatGameTime } from '@/lib/utils/format';
 import {
   DollarSign,
@@ -15,8 +16,6 @@ import {
 export default function TopBar() {
   const {
     money,
-    level,
-    experience,
     reputation,
     gameTime,
     gameSpeed,
@@ -25,8 +24,9 @@ export default function TopBar() {
     togglePause,
   } = useGameStore();
 
-  const requiredExp = Math.floor(100 * Math.pow(1.5, level - 1));
-  const expProgress = (experience / requiredExp) * 100;
+  const { currentLevel, currentExp } = useLevelStore();
+  const requiredExp = getRequiredExpForLevel(currentLevel + 1);
+  const expProgress = currentLevel >= 100 ? 100 : (currentExp / requiredExp) * 100;
 
   const speedButtons = [
     { speed: 1, icon: Play, label: '1x' },
@@ -61,13 +61,16 @@ export default function TopBar() {
             <div className="flex items-center gap-2">
               <TrendingUp className="w-5 h-5" />
               <div>
-                <div className="text-sm font-semibold">Level {level}</div>
+                <div className="text-sm font-semibold">Level {currentLevel}</div>
                 <div className="w-32 h-2 bg-white/30 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-yellow-400 transition-all duration-300"
-                    style={{ width: `${expProgress}%` }}
+                    style={{ width: `${Math.min(100, expProgress)}%` }}
                   />
                 </div>
+                {currentLevel < 100 && (
+                  <div className="text-xs text-white/70">{currentExp}/{requiredExp}</div>
+                )}
               </div>
             </div>
 

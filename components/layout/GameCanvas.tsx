@@ -3,14 +3,18 @@
 import { useAnimalStore } from '@/store/animalStore';
 import { useFacilityStore } from '@/store/facilityStore';
 import AnimalCard from '../animals/AnimalCard';
+import VisitorVisualization from '../game/VisitorVisualization';
 
 export default function GameCanvas() {
   const { animals } = useAnimalStore();
   const { facilities } = useFacilityStore();
 
   return (
-    <div className="min-h-[calc(100vh-140px)] p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-[calc(100vh-140px)] p-6 relative">
+      {/* Visitor Visualization */}
+      <VisitorVisualization />
+
+      <div className="max-w-7xl mx-auto relative z-10">
         {/* 환영 메시지 */}
         {animals.length === 0 && facilities.length === 0 && (
           <div className="text-center py-20">

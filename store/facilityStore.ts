@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Facility } from '@/types';
 import { generateId } from '@/lib/utils/game';
+import { useLevelStore, EXP_REWARDS } from './levelStore';
 
 interface FacilityStore {
   facilities: Facility[];
@@ -32,6 +33,10 @@ export const useFacilityStore = create<FacilityStore>((set, get) => ({
     set((state) => ({
       facilities: [...state.facilities, facility],
     }));
+
+    // 경험치 보상 (시설 타입에 따라)
+    const expReward = EXP_REWARDS.buildFacility[facilityType as keyof typeof EXP_REWARDS.buildFacility] || 15;
+    useLevelStore.getState().addExp(expReward, `시설 건설: ${facilityId}`);
 
     return facility;
   },

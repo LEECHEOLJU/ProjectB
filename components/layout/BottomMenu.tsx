@@ -5,7 +5,8 @@ import {
   PawPrint,
   Building2,
   BarChart3,
-  Settings
+  Settings,
+  Grid3x3
 } from 'lucide-react';
 import type { ModalType } from '@/types';
 
@@ -17,7 +18,7 @@ export default function BottomMenu({ onMenuClick }: BottomMenuProps) {
   const menuItems = [
     { id: 'shop', icon: ShoppingCart, label: '상점', color: 'bg-blue-500' },
     { id: 'animals', icon: PawPrint, label: '동물', color: 'bg-green-500' },
-    { id: 'facilities', icon: Building2, label: '시설', color: 'bg-purple-500' },
+    { id: 'placement', icon: Grid3x3, label: '배치', color: 'bg-teal-500' },
     { id: 'stats', icon: BarChart3, label: '통계', color: 'bg-orange-500' },
     { id: 'settings', icon: Settings, label: '설정', color: 'bg-gray-500' },
   ];

@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { Animal } from '@/types';
 import { generateId, getRandomGender, getAnimalStage } from '@/lib/utils/game';
 import { ANIMAL_SPECIES } from '@/data/animals';
+import { useLevelStore, EXP_REWARDS } from './levelStore';
 
 interface AnimalStore {
   animals: Animal[];
@@ -45,6 +46,10 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
       animals: [...state.animals, animal],
     }));
 
+    // 경험치 보상 (동물 등급에 따라 다름)
+    const expReward = EXP_REWARDS.buyAnimal[species.rarity];
+    useLevelStore.getState().addExp(expReward, `${species.name} 구매`);
+
     return animal;
   },
 
@@ -64,6 +69,7 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
       hunger: 100,
       lastFedAt: Date.now(),
     });
+    useLevelStore.getState().addExp(EXP_REWARDS.feedAnimal, '동물 먹이 주기');
   },
 
   playWithAnimal: (animalId) => {
@@ -72,6 +78,7 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
       happiness: Math.min(100, get().animals.find((a) => a.id === animalId)!.happiness + 20),
       lastPlayedAt: Date.now(),
     });
+    useLevelStore.getState().addExp(EXP_REWARDS.playWithAnimal, '동물과 놀기');
   },
 
   treatAnimal: (animalId) => {
@@ -82,6 +89,7 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
       sicknessType: undefined,
       lastTreatedAt: Date.now(),
     });
+    useLevelStore.getState().addExp(EXP_REWARDS.treatAnimal, '동물 치료');
   },
 
   ageAnimals: () => set((state) => ({
@@ -164,6 +172,7 @@ export const useAnimalStore = create<AnimalStore>((set, get) => ({
     if (!species) return null;
 
     const baby = addAnimal(parent1.speciesId, `Baby ${species.name}`);
+    useLevelStore.getState().addExp(EXP_REWARDS.breedAnimal, '동물 번식');
     return baby;
   },
 }));

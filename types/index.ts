@@ -191,6 +191,7 @@ export type ModalType =
   | 'stats'
   | 'settings'
   | 'achievement'
+  | 'placement'
   | null;
 
 export interface Notification {

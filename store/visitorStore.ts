@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { VisitorStats } from '@/types';
+import { useLevelStore, EXP_REWARDS } from './levelStore';
 
 interface VisitorStore extends VisitorStats {
   // Actions
@@ -63,6 +64,11 @@ export const useVisitorStore = create<VisitorStore>((set, get) => ({
       dailyVisitors: state.dailyVisitors + visitors,
       averageSatisfaction: satisfaction,
     }));
+
+    // 방문객이 들어올 때 경험치 보상
+    if (visitors > 0) {
+      useLevelStore.getState().addExp(visitors * EXP_REWARDS.visitorEnter, '방문객 입장');
+    }
   },
 
   addRevenue: (amount) => set((state) => ({

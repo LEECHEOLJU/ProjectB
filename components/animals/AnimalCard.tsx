@@ -3,9 +3,10 @@
 import type { Animal } from '@/types';
 import { useAnimalStore } from '@/store/animalStore';
 import { useGameStore } from '@/store/gameStore';
+import { useShowStore, ANIMAL_SHOWS } from '@/store/showStore';
 import { ANIMAL_SPECIES } from '@/data/animals';
 import { getStatBarColor } from '@/lib/utils/format';
-import { Utensils, Heart, Activity, Trash2, Pill } from 'lucide-react';
+import { Utensils, Heart, Activity, Trash2, Pill, Sparkles } from 'lucide-react';
 
 interface AnimalCardProps {
   animal: Animal;
@@ -14,9 +15,15 @@ interface AnimalCardProps {
 export default function AnimalCard({ animal }: AnimalCardProps) {
   const { feedAnimal, playWithAnimal, treatAnimal, removeAnimal } = useAnimalStore();
   const { spendMoney, addExperience } = useGameStore();
+  const { startShow, isShowActive, isOnCooldown, getRemainingCooldown } = useShowStore();
 
   const species = ANIMAL_SPECIES.find((s) => s.id === animal.speciesId);
   if (!species) return null;
+
+  const animalShow = ANIMAL_SHOWS[species.id];
+  const showActive = animalShow && isShowActive(species.id);
+  const showOnCooldown = animalShow && isOnCooldown(species.id);
+  const cooldownMinutes = animalShow ? getRemainingCooldown(species.id) : 0;
 
   const feedCost = 50;
   const treatCost = 200;
@@ -45,6 +52,17 @@ export default function AnimalCard({ animal }: AnimalCardProps) {
       removeAnimal(animal.id);
       // 판매 가격은 구매 가격의 50%
       useGameStore.getState().addMoney(Math.floor(species.price * 0.5));
+    }
+  };
+
+  const handleStartShow = () => {
+    if (animalShow && animal.health > 50 && animal.happiness > 50) {
+      const success = startShow(species.id, animalShow);
+      if (!success) {
+        alert('쇼를 시작할 수 없습니다. 쿨다운 중이거나 이미 진행 중입니다.');
+      }
+    } else {
+      alert('쇼를 하려면 동물의 건강과 행복도가 50% 이상이어야 합니다!');
     }
   };
 
@@ -173,6 +191,34 @@ export default function AnimalCard({ animal }: AnimalCardProps) {
           </button>
         )}
       </div>
+
+      {/* Show Button */}
+      {animalShow && (
+        <div className="mt-2">
+          {showActive ? (
+            <div className="bg-purple-100 text-purple-700 text-xs p-2 rounded text-center font-semibold animate-pulse">
+              🎭 {animalShow.name} 공연 중!
+            </div>
+          ) : showOnCooldown ? (
+            <button
+              disabled
+              className="w-full bg-gray-300 text-gray-500 text-xs py-2 rounded cursor-not-allowed"
+            >
+              <Sparkles className="w-3 h-3 inline mr-1" />
+              쿨다운 {cooldownMinutes}분
+            </button>
+          ) : (
+            <button
+              onClick={handleStartShow}
+              disabled={animal.health < 50 || animal.happiness < 50}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-300 disabled:to-gray-400 text-white text-xs py-2 rounded font-semibold transition-all"
+            >
+              <Sparkles className="w-3 h-3 inline mr-1" />
+              {animalShow.name} 시작
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

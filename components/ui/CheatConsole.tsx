@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useGameStore } from '@/store/gameStore';
 import { useAnimalStore } from '@/store/animalStore';
 import { useNotificationStore } from '@/store/notificationStore';
+import { useLevelStore } from '@/store/levelStore';
 import { Terminal, X } from 'lucide-react';
 import { ANIMAL_SPECIES } from '@/data/animals';
 
@@ -16,9 +17,10 @@ export default function CheatConsole() {
     '---'
   ]);
 
-  const { addMoney, setMoney, addExperience, setReputation, setLevel } = useGameStore();
+  const { addMoney, setMoney, setReputation } = useGameStore();
   const { addAnimal } = useAnimalStore();
   const { addNotification } = useNotificationStore();
+  const { addExp, currentLevel } = useLevelStore();
 
   // Ctrl + ` 로 콘솔 열기/닫기
   useEffect(() => {
@@ -88,14 +90,21 @@ export default function CheatConsole() {
 
       case 'exp':
         const expAmount = arg1 ? parseInt(arg1) : 10000;
-        addExperience(expAmount);
-        addToHistory(`⭐ 경험치 ${expAmount} 추가됨!`);
+        addExp(expAmount, '치트');
+        addToHistory(`⭐ 경험치 ${expAmount} 추가됨! (현재 레벨: ${currentLevel})`);
         addNotification('success', `⭐ 경험치 +${expAmount}`);
         break;
 
       case 'levelup':
         const targetLevel = arg1 ? parseInt(arg1) : 50;
-        setLevel(targetLevel);
+        if (targetLevel > 100) {
+          addToHistory('❌ 최대 레벨은 100입니다.');
+          break;
+        }
+        // 레벨을 직접 설정하는 대신 충분한 경험치를 줌
+        const levelStore = useLevelStore.getState();
+        levelStore.currentLevel = targetLevel;
+        levelStore.currentExp = 0;
         addToHistory(`🎯 레벨 ${targetLevel}로 설정됨!`);
         addNotification('success', `🎯 레벨 ${targetLevel} 달성!`);
         break;
